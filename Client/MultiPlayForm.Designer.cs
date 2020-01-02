@@ -45,7 +45,7 @@
             this.boardPicture.TabIndex = 0;
             this.boardPicture.TabStop = false;
             this.boardPicture.Paint += new System.Windows.Forms.PaintEventHandler(this.boardPicture_Paint);
-            this.boardPicture.MouseClick += new System.Windows.Forms.MouseEventHandler(this.boardPicture_MouseClick);
+            this.boardPicture.MouseDown += new System.Windows.Forms.MouseEventHandler(this.boardPicture_MouseDown);
             // 
             // connectBtn
             // 
@@ -95,6 +95,7 @@
             this.Controls.Add(this.boardPicture);
             this.Name = "MultiPlayForm";
             this.Text = "MultiPlayForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MultiPlayForm_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.boardPicture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

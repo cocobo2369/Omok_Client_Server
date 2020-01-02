@@ -21,6 +21,7 @@ public:
 		//this가 포인터인가봄!!
 		this->id = id;
 		this->socket = socket;
+		this->roomId = 0;
 	}
 
 	int getId() {
@@ -67,7 +68,7 @@ vector<string> tokenize(string input, char delimiter) {
 	return tokens;
 }
 
-enum RoomCnt { EMPTY = 0, ONE, FULL };
+enum RoomCnt { EMPTY =0, ONE, FULL};
 
 RoomCnt isRoomFull(int roomId) { //모든 vector를 다 돌아서 roomId를 찾는 방식이지만 hash 등으로 충분히 바꿀 수 있다.
 	// room은 최대 2명만 들어갈 것이므로 0,1 은 false, 2는 true 로 하면 된다.
@@ -82,7 +83,7 @@ RoomCnt isRoomFull(int roomId) { //모든 vector를 다 돌아서 roomId를 찾는 방식이�
 	return cnt > 0 ? ONE : EMPTY;
 }
 
-void exit(int roomId) {
+void exit_(int roomId) {
 	char* cmd = new char[Max];
 
 	for (int i = 0; i < cntClient; i++) {
@@ -119,12 +120,12 @@ void SendAxis(int roomId, int x, int y) {
 	결국 한 쪽은 안받아도 되는데 받게 된다.
 	*/
 
-	char* cmd = new char[Max];
+	char * cmd = new char[Max];
 	ZeroMemory(cmd, Max);
 	for (int i = 0; i < cntClient; i++) {
 		if (clients[i].getRoomId() == roomId) {
 			string temp = "[Axis]" + to_string(x) + "," + to_string(y);
-			sprintf(cmd, "%s", temp);
+			sprintf(cmd, "%s", temp.c_str());
 			send(clients[i].getSocket(), cmd, Max, 0);
 		}
 	}
@@ -139,7 +140,7 @@ void serverThread(Client* client) {
 	*/
 
 	//주고 받고
-	char* recvCmd = new char[Max];
+	char * recvCmd = new char[Max];
 	char* sendCmd = new char[Max];
 
 	/*
@@ -148,7 +149,7 @@ void serverThread(Client* client) {
 
 	int recvSize = 0;
 	while (true) {
-
+		
 		//1. client로부터 받은게 있다면, 받은 cmd가 무엇인지 해석해야한다.
 		ZeroMemory(recvCmd, Max);
 		if ((recvSize = recv(client->getSocket(), recvCmd, Max, 0) > 0)) {
@@ -202,7 +203,7 @@ void serverThread(Client* client) {
 				if (clients[i].getId() == client->getId()) {
 					//게임중이던 다른 client가 나간 경우
 					if (clients[i].getRoomId() != -1 && isRoomFull(client->getRoomId()) == FULL) {
-						exit(clients[i].getRoomId());
+						exit_(clients[i].getRoomId());
 					}
 					clients.erase(clients.begin() + i);
 					break;
@@ -235,7 +236,6 @@ int main() {
 			cout << "[ 새로운 사용자 접속 ]" << endl;
 			CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)serverThread, (LPVOID)client, NULL, NULL); //client 마다 스레드가 생성되어 별도로 client가 처리된다.
 			clients.push_back(*client);
-			cntClient++;
 		}
 		Sleep(100);
 	}
