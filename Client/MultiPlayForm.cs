@@ -167,7 +167,7 @@ namespace Client
                 {
                     refresh();
                     string horse = message.Split(']')[1];
-                    if (horse.Contains("Black"))
+                    if (horse.Contains("BLACK"))
                     {
                         this.status.Text = "당신의 차례입니다.";
                         nowTurn = true;
@@ -330,7 +330,7 @@ namespace Client
             }
 
             /* 놓은 바둑돌의 위치 보내기 */
-            string message = "[Put]" + textBox.Text + "," + x + "," + y;
+            string message = "[Axis]" + textBox.Text + "," + x + "," + y;
             byte[] buf = Encoding.ASCII.GetBytes(message);
             stream.Write(buf, 0, buf.Length);
             //5. 오목 판단
